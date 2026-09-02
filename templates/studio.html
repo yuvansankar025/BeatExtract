@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeatExtract - Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+<!-- Loader Overlay for form submission -->
+<div id="loaderOverlay" class="loader-overlay">
+    <div class="spinner"></div>
+    <h2 style="margin-bottom: 0.5rem;">Uploading Track...</h2>
+    <p style="color: var(--text-muted);">Please wait while we prepare your file.</p>
+</div>
+
+<div class="page">
+    <div class="card studio">
+        <div class="logo" style="justify-content: flex-start;">
+            <div class="logo-icon"><i class="ph-bold ph-waveform"></i></div>
+            BeatExtract
+        </div>
+        
+        <div class="top-title">Studio Environment</div>
+        <h1>Upload Audio</h1>
+        <p>Upload your audio file to begin the separation process.</p>
+
+        <form action="/separate" method="POST" enctype="multipart/form-data" id="uploadForm">
+
+            <div class="file-box">
+                <label for="audioFile" class="file-label" id="dropZone">
+                    <i class="ph-duotone ph-cloud-arrow-up upload-icon"></i>
+                    <span>Drag & Drop or Click to Browse</span>
+                    <small>Supports MP3, WAV, FLAC, OGG, M4A</small>
+                </label>
+                <input type="file" id="audioFile" name="audio" accept=".mp3,.wav,.flac,.ogg,.m4a" required>
+                
+                <div class="file-details" id="fileDetails">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="ph-fill ph-file-audio" style="font-size: 2rem; color: var(--primary);"></i>
+                        <div class="file-info">
+                            <span class="file-name" id="fileName">track.mp3</span>
+                            <span class="file-meta" id="fileMeta">4.2 MB</span>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-file" id="removeFileBtn" title="Remove file">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn full" id="submitBtn">
+                <i class="ph-bold ph-magic-wand"></i> Start Separation
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

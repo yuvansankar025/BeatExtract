@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeatExtract - Processing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+<div class="page center">
+    <div class="card processing">
+        <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+            <div class="logo-icon"><i class="ph-bold ph-waveform"></i></div>
+            BeatExtract
+        </div>
+
+        <div style="font-size: 4rem; color: var(--primary); margin-bottom: 1.5rem;">
+            <i class="ph-duotone ph-cpu"></i>
+        </div>
+        
+        <h1>AI Separation in Progress</h1>
+        <p>Our advanced neural networks are isolating the tracks. This may take a few moments...</p>
+
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 1rem;">
+            Please do not close this window.
+        </p>
+        
+        <!-- We will auto-redirect using JS -->
+        <a href="/results/{{ session_id }}" id="resultsButton" class="btn" style="display:none; margin-top: 2rem;">
+            <i class="ph-bold ph-check-circle"></i> View Results
+        </a>
+    </div>
+</div>
+
+<script>
+    // The backend only returns this page when processing is ALREADY complete.
+    // So we just show a brief finalizing animation, then redirect.
+    setTimeout(() => {
+        window.location.href = "/results/{{ session_id }}";
+    }, 1500); // Small delay to show the nice animation and give feedback
+</script>
+</body>
+</html>

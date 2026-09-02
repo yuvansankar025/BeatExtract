@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeatExtract - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+</head>
+<body>
+<div class="page">
+    <div class="card results">
+        <div class="logo" style="justify-content: flex-start;">
+            <div class="logo-icon"><i class="ph-bold ph-waveform"></i></div>
+            BeatExtract
+        </div>
+
+        <div class="top-title">Extraction Complete</div>
+        <h1>Separated Tracks</h1>
+        <p>Select instruments to mix and play them together, or download them individually.</p>
+
+        <div class="actions" style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+            <button class="btn" id="playSelectedBtn" onclick="playSelected()">
+                <i class="ph-bold ph-play"></i> Play Selected
+            </button>
+            <button class="btn secondary" id="stopBtn" onclick="stopAudio()">
+                <i class="ph-bold ph-stop"></i> Stop
+            </button>
+            <button class="btn" id="downloadSelectedBtn" onclick="downloadSelected()">
+                <i class="ph-bold ph-download-simple"></i> Download Selected
+            </button>
+        </div>
+        
+        <div id="mixStatus" style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.875rem;"></div>
+
+        <div class="stem-list">
+        {% for stem, path in stems.items() %}
+            <label class="stem-card" style="cursor: pointer;">
+                <input type="checkbox" class="stem-check" value="{{ stem }}" checked style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
+                <div class="stem-title">
+                    {% if stem == "vocals" %}
+                        <i class="ph-duotone ph-microphone-stage" style="font-size: 1.5rem; color: var(--primary);"></i> Vocals
+                    {% elif stem == "drums" %}
+                        <i class="ph-duotone ph-drum" style="font-size: 1.5rem; color: var(--primary);"></i> Drums
+                    {% elif stem == "bass" %}
+                        <i class="ph-duotone ph-guitar" style="font-size: 1.5rem; color: var(--primary);"></i> Bass
+                    {% else %}
+                        <i class="ph-duotone ph-piano-keys" style="font-size: 1.5rem; color: var(--primary);"></i> Other
+                    {% endif %}
+                </div>
+
+                <audio id="{{ stem }}-audio" src="/download/{{ session_id }}/{{ stem }}" controls preload="auto" controlsList="nodownload" style="flex: 1;" onclick="event.stopPropagation()"></audio>
+
+                <div class="controls" onclick="event.stopPropagation()">
+                    <a class="btn download-btn" href="/download/{{ session_id }}/{{ stem }}" download>
+                        <i class="ph-bold ph-download-simple"></i>
+                    </a>
+                </div>
+            </label>
+        {% endfor %}
+        </div>
+        
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="/studio" class="btn secondary">
+                <i class="ph-bold ph-arrow-counter-clockwise"></i> Process Another File
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
