@@ -1,6 +1,5 @@
-Flask==3.0.3
-numpy==1.26.4
-torch==2.3.1
-torchaudio==2.3.1
-demucs==4.0.1
-gunicorn==22.0.0
+Flask
+numpy
+demucs
+torch
+torchaudio

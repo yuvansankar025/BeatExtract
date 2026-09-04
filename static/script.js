@@ -315,30 +315,18 @@ window.downloadSelected = async function() {
     }
     
     try {
-        if(status) status.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Generating mixed audio file on server...';
+        const buffer = await createMix();
+        if (!buffer) return;
         
-        // Use backend /mix_and_download API
-        // session_id is available in the URL: /results/<session_id>
-        const pathParts = window.location.pathname.split('/');
-        const sessionId = pathParts[pathParts.length - 1];
+        if(status) status.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Generating mixed audio file...';
         
-        const response = await fetch(`/mix_and_download/${sessionId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ stems: selected })
-        });
+        // Export to WAV natively in browser as MP3 encoding requires heavy third-party libraries
+        const wavBlob = audioBufferToWav(buffer);
+        const url = URL.createObjectURL(wavBlob);
         
-        if (!response.ok) {
-            throw new Error('Mixing failed on server.');
-        }
-        
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'BeatExtract_Mix.mp3';
+        link.download = 'BeatExtract_Mix.wav';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
