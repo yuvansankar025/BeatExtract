@@ -87,33 +87,33 @@ def studio():
 # =====================================
 # START SEPARATION
 # =====================================
-
 @app.route("/separate", methods=["POST"])
 def separate():
-    print("========== /separate CALLED ==========")
-    
-def separate():
 
-    # Check file
+    print("FILES:", request.files)
 
     if "audio" not in request.files:
-
-        return jsonify({
-            "error":
-            "No audio file selected."
-        }), 400
-
+        print("ERROR: audio not found")
+        return jsonify({"error": "No audio file selected."}), 400
 
     audio = request.files["audio"]
 
+    print("FILENAME:", audio.filename)
 
     if audio.filename == "":
+        print("ERROR: empty filename")
+        return jsonify({"error": "Please select an audio file."}), 400
 
-        return jsonify({
-            "error":
-            "Please select an audio file."
-        }), 400
+    extension = os.path.splitext(audio.filename)[1].lower()
+    print("EXTENSION:", extension)
 
+    allowed_extensions = [".mp3", ".wav", ".flac", ".ogg", ".m4a"]
+
+    if extension not in allowed_extensions:
+        print("ERROR: unsupported extension")
+        return jsonify({"error": "Unsupported audio format."}), 400
+
+    
 
     # =================================
     # Generate unique ID
