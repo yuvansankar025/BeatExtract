@@ -391,32 +391,19 @@ def mix_and_download(session_id):
 
 if __name__ == "__main__":
 
-    print("")
-    print(
-        "================================"
-    )
-    print(
-        " AI MUSIC SOURCE SEPARATOR"
-    )
-    print(
-        "================================"
-    )
-    print(
-        "Server starting..."
-    )
-    print(f"Server running on port {port}"
-    )
-    print(
-        "================================"
-    )
-    print("")
+    port = int(os.environ.get("PORT", 10000))
 
-
-   if __name__ == "__main__":
-    import os
+    print("")
+    print("================================")
+    print(" AI MUSIC SOURCE SEPARATOR")
+    print("================================")
+    print("Server starting...")
+    print(f"Server running on port {port}")
+    print("================================")
+    print("")
 
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
+        port=port,
         debug=False
     )
