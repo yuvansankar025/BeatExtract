@@ -118,91 +118,62 @@ def separate():
     # =================================
     # Generate unique ID
     # =================================
-
-    file_id = str(
-        uuid.uuid4()
-    )
-
-
+    file_id = str(uuid.uuid4())
     original_name = audio.filename
+    extension = os.path.splitext(original_name)[1].lower()
 
-
-    extension = os.path.splitext(
-        original_name
-    )[1].lower()
-
-
-    allowed_extensions = [
-        ".mp3",
-        ".wav",
-        ".flac",
-        ".ogg",
-        ".m4a"
-    ]
-
-
+    allowed_extensions = [".mp3", ".wav", ".flac", ".ogg", ".m4a"]
     if extension not in allowed_extensions:
+        return jsonify({"error": "Unsupported audio format."}), 400
 
-        return jsonify({
-            "error":
-            "Unsupported audio format."
-        }), 400
-
-
-    filename = (
-        file_id +
-        extension
-    )
-
-
-    input_path = os.path.join(
-        UPLOAD_FOLDER,
-        filename
-    )
-
-
-    # Save uploaded audio
-
-    audio.save(
-        input_path
-    )
-
+    filename = file_id + extension
+    input_path = os.path.join(UPLOAD_FOLDER, filename)
+    audio.save(input_path)
 
     try:
+        import threading
+        
+        def process_audio_thread(in_path, out_folder, session_id):
+            try:
+                separate_audio(in_path, out_folder)
+                status_dir = os.path.join(out_folder, "htdemucs", session_id)
+                os.makedirs(status_dir, exist_ok=True)
+                with open(os.path.join(status_dir, "status.txt"), "w") as f:
+                    f.write("done")
+            except Exception as e:
+                print("Separation failed:", str(e))
+                status_dir = os.path.join(out_folder, "htdemucs", session_id)
+                os.makedirs(status_dir, exist_ok=True)
+                with open(os.path.join(status_dir, "status.txt"), "w") as f:
+                    f.write("error")
 
-        # =================================
-        # RUN AI MODEL
-        # =================================
+        thread = threading.Thread(target=process_audio_thread, args=(input_path, OUTPUT_FOLDER, file_id))
+        thread.start()
 
-        separate_audio(
-            input_path,
-            OUTPUT_FOLDER
-        )
-
-
-        # =================================
-        # Go to progress page
-        # =================================
-
-        return render_template(
-            "progress.html",
-            session_id=file_id
-        )
-
+        return render_template("progress.html", session_id=file_id)
 
     except Exception as error:
-
-        print(
-            "Separation failed:"
-        )
-
-        print(error)
+        print("Separation failed:", error)
+        return jsonify({"error": str(error)}), 500
 
 
-        return jsonify({
-            "error":
-            str(error)
-        }), 500
+# =====================================
+# STATUS ENDPOINT
+# =====================================
+@app.route("/status/<session_id>")
+def status(session_id):
+    result_folder = os.path.join(OUTPUT_FOLDER, "htdemucs", session_id)
+    status_file = os.path.join(result_folder, "status.txt")
+    
+    if os.path.exists(status_file):
+        with open(status_file, "r") as f:
+            state = f.read().strip()
+        if state == "done":
+            return jsonify({"status": "done"})
+        elif state == "error":
+            return jsonify({"status": "error"})
+            
+    return jsonify({"status": "processing"})
 
 
 # =====================================

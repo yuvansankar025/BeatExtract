@@ -13,6 +13,7 @@ def separate_audio(input_file, output_folder):
         "demucs",
         "-n",
         "htdemucs",
+        "-j", "1",
         "--mp3",
         "--mp3-bitrate",
         "128",
