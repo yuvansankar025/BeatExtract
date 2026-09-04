@@ -88,10 +88,10 @@ def studio():
 # START SEPARATION
 # =====================================
 
-@app.route(
-    "/separate",
-    methods=["POST"]
-)
+@app.route("/separate", methods=["POST"])
+def separate():
+    print("========== /separate CALLED ==========")
+    
 def separate():
 
     # Check file
