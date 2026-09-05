@@ -191,12 +191,13 @@ def separate():
         )
 
 
-    except Exception:
+    except Exception as e:
 
         print("========== FULL ERROR ==========")
         traceback.print_exc()
 
-        return jsonify({"error": traceback.format_exc()}), 500
+        error_message = f"Error: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
+        return jsonify({"error": error_message}), 500
 
 
 # =====================================

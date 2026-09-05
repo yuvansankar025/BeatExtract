@@ -7,7 +7,7 @@ def separate_audio(input_file, output_folder):
     os.makedirs(output_folder, exist_ok=True)
 
     command = [
-        sys.executable,
+        "python",
         "-m",
         "demucs",
         "-n",
