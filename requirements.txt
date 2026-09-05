@@ -1,8 +1,9 @@
-
 Flask==3.0.3
-numpy==1.26.4
-torch
-torchaudio
-demucs==4.0.1
 gunicorn==22.0.0
+numpy==1.26.4
 
+torch==2.8.0
+torchaudio==2.8.0
+torchcodec==0.7.0
+
+demucs==4.0.1
