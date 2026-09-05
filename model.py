@@ -2,7 +2,6 @@ import os
 import sys
 import subprocess
 
-
 def separate_audio(input_file, output_folder):
 
     os.makedirs(output_folder, exist_ok=True)
@@ -23,18 +22,28 @@ def separate_audio(input_file, output_folder):
 
     process = subprocess.run(
         command,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True
     )
 
-    # Print logs for Render debugging
     print("========== DEMUCS STDOUT ==========")
     print(process.stdout)
+
     print("========== DEMUCS STDERR ==========")
     print(process.stderr)
 
     if process.returncode != 0:
-        raise Exception(process.stderr)
+
+        error = process.stderr.strip()
+
+        if error == "":
+            error = process.stdout.strip()
+
+        if error == "":
+            error = "Demucs failed without any output."
+
+        raise Exception(error)
 
     filename = os.path.basename(input_file)
     song_name = os.path.splitext(filename)[0]
@@ -46,22 +55,10 @@ def separate_audio(input_file, output_folder):
     )
 
     stems = {
-        "vocals": os.path.join(
-            result_folder,
-            "vocals.mp3"
-        ),
-        "drums": os.path.join(
-            result_folder,
-            "drums.mp3"
-        ),
-        "bass": os.path.join(
-            result_folder,
-            "bass.mp3"
-        ),
-        "other": os.path.join(
-            result_folder,
-            "other.mp3"
-        )
+        "vocals": os.path.join(result_folder, "vocals.mp3"),
+        "drums": os.path.join(result_folder, "drums.mp3"),
+        "bass": os.path.join(result_folder, "bass.mp3"),
+        "other": os.path.join(result_folder, "other.mp3")
     }
 
     return stems

@@ -8,6 +8,7 @@ from flask import (
 
 import os
 import uuid
+import traceback
 
 from model import separate_audio
 
@@ -190,19 +191,12 @@ def separate():
         )
 
 
-    except Exception as error:
+    except Exception:
 
-        print(
-            "Separation failed:"
-        )
+        print("========== FULL ERROR ==========")
+        traceback.print_exc()
 
-        print(error)
-
-
-        return jsonify({
-            "error":
-            str(error)
-        }), 500
+        return jsonify({"error": traceback.format_exc()}), 500
 
 
 # =====================================
